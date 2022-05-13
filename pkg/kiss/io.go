@@ -5,7 +5,7 @@ import (
 	"io"
 )
 
-const MaxFrameSize = 2500
+const MaxFrameSize = 2123
 
 // NewFrameWriter wraps io.Writer to FrameWriter.
 func NewFrameWriter(w io.Writer) *FrameWriter {
@@ -43,7 +43,7 @@ type FrameReader struct {
 }
 
 func (reader FrameReader) Read() (Frame, error) {
-	frameData := make([]byte, MaxFrameSize)
+	frameData := make([]byte, MaxFrameSize+3)
 	n, err := reader.r.Read(frameData)
 	if err != nil {
 		return Frame{}, err
