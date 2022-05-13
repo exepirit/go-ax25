@@ -1,4 +1,4 @@
-package tnc_test
+package kiss_test
 
 import (
 	"errors"
@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/exepirit/go-ax25/pkg/tnc"
+	"github.com/exepirit/go-ax25/pkg/kiss"
 )
 
 func TestEscape(t *testing.T) {
@@ -30,7 +30,7 @@ func TestEscape(t *testing.T) {
 
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			result := tnc.Escape(testCase.Data)
+			result := kiss.Escape(testCase.Data)
 
 			if len(result) != len(testCase.Escaped) {
 				t.Fatalf("invalid array size. expected: %d, got: %d", len(testCase.Escaped), len(result))
@@ -76,7 +76,7 @@ func TestUnescape(t *testing.T) {
 
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
-			result, err := tnc.Unescape(testCase.Escaped)
+			result, err := kiss.Unescape(testCase.Escaped)
 
 			if err != nil {
 				if testCase.ExpectedError != nil {

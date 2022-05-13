@@ -1,4 +1,4 @@
-package tnc
+package kiss
 
 import (
 	"fmt"
