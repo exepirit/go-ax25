@@ -5,18 +5,6 @@ import (
 	"io"
 )
 
-const (
-	MaxDataSize = 2123
-	MaxPDUSize  = MaxDataSize + 3
-)
-
-const (
-	fend  = 0xc0
-	fesc  = 0xdb
-	tfend = 0xdc
-	tfesc = 0xdd
-)
-
 // NewFrameWriter wraps io.Writer to FrameWriter.
 func NewFrameWriter(w io.Writer) *FrameWriter {
 	return &FrameWriter{
@@ -29,7 +17,7 @@ type FrameWriter struct {
 	buf *bufio.Writer
 }
 
-func (writer FrameWriter) Write(frame *Frame) error {
+func (writer *FrameWriter) Write(frame *Frame) error {
 	err := writer.buf.WriteByte(fend)
 	if err != nil {
 		return err
