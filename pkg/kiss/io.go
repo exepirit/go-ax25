@@ -10,6 +10,13 @@ const (
 	MaxPDUSize  = MaxDataSize + 3
 )
 
+const (
+	fend  = 0xc0
+	fesc  = 0xdb
+	tfend = 0xdc
+	tfesc = 0xdd
+)
+
 // NewFrameWriter wraps io.Writer to FrameWriter.
 func NewFrameWriter(w io.Writer) *FrameWriter {
 	return &FrameWriter{
@@ -28,7 +35,7 @@ func (writer FrameWriter) Write(frame *Frame) error {
 		return err
 	}
 
-	err = writer.buf.WriteByte(frame.Command<<4 | (frame.Port & 0xf))
+	err = writer.buf.WriteByte(uint8(frame.Command)<<4 | (frame.Port & 0xf))
 	if err != nil {
 		return err
 	}
@@ -101,7 +108,7 @@ func (reader *FrameReader) handleByte(b byte) (done bool) {
 		}
 	case readerWaitCommand:
 		reader.frame.Port = b & 0xf
-		reader.frame.Command = b >> 4 & 0xf
+		reader.frame.Command = FrameType(b >> 4 & 0xf)
 		reader.frame.Data = make([]byte, 0, MaxDataSize)
 		reader.state = readerCommandRead
 
