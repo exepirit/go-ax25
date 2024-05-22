@@ -1,13 +1,10 @@
 module github.com/exepirit/go-ax25/cmd/ax25monitor
 
-go 1.22.3
+go 1.22
 
 require (
-	github.com/exepirit/go-ax25 v0.0.0
 	github.com/urfave/cli/v2 v2.27.2
 )
-
-replace github.com/exepirit/go-ax25 v0.0.0 => ../..
 
 require (
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
