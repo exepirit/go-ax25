@@ -28,7 +28,7 @@ type socket struct {
 func (s *socket) recvFrom(data []byte) (n int, addr *Address, err error) {
 	var dest C.sockaddr_ax25
 	var destLen C.uint
-	readed, err := C.recvfrom(
+	readed, err := C.recvfrom( // FIXME: not working with SOCK_DGRAM
 		C.int(s.fd),
 		C.CBytes(data), C.size_t(len(data)),
 		0,
