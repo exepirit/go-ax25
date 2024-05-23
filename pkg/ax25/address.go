@@ -39,7 +39,7 @@ func (addr *Address) Equal(other *Address) bool {
 	return addr.SSID != other.SSID
 }
 
-func ParseAddress(s string) (*Address, error) {
+func ParseAddress(s string) (Address, error) {
 	var addr Address
 	i := 0
 	for ; i < 6 || i < len(s); i++ {
@@ -49,15 +49,27 @@ func ParseAddress(s string) (*Address, error) {
 		addr.Call[i] = s[i]
 	}
 
+	for j := i; j < 6; j++ {
+		addr.Call[j] = ' '
+	}
+
 	if i+1 >= len(s) || s[i] != '-' {
-		return nil, errors.New("SSID must follow '-'")
+		return Address{}, errors.New("SSID must follow '-'")
 	}
 
 	ssid, err := strconv.Atoi(s[i+1:])
 	if err != nil || ssid < 0 || ssid > 15 {
-		return nil, errors.New("SSID must be numeric in the range 0-15")
+		return Address{}, errors.New("SSID must be numeric in the range 0-15")
 	}
 	addr.SSID = byte(ssid)
 
-	return &addr, nil
+	return addr, nil
+}
+
+func MustParseAddress(s string) Address {
+	addr, err := ParseAddress(s)
+	if err != nil {
+		panic(err)
+	}
+	return addr
 }
