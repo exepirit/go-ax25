@@ -27,7 +27,7 @@ var sendCmd = &cli.Command{
 			return errors.New("invalid remote callsign value")
 		}
 
-		conn, err := ax25.DialUnnumbered(localAddr, remoteAddr)
+		conn, err := ax25.DialUnnumbered(&localAddr, &remoteAddr)
 		if err != nil {
 			return err
 		}
