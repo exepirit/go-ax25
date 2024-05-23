@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"github.com/exepirit/go-ax25/pkg/ax25"
+	"github.com/exepirit/go-ax25/ax25"
 	"github.com/urfave/cli/v2"
 )
 

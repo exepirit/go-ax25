@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/exepirit/go-ax25/pkg/kiss"
+	"github.com/exepirit/go-ax25/kiss"
 	"github.com/urfave/cli/v2"
 	"go.bug.st/serial"
 	"log/slog"
