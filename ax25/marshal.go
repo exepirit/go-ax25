@@ -4,6 +4,8 @@ import (
 	"io"
 )
 
+// NewPacketWriter creates a new instance of PacketWriter for writing AX.25 packets to an io.Writer interface.
+// The `mtu` (Maximum Transfer Unit) parameter determines the maximum size of the packet information field.
 func NewPacketWriter(w io.Writer, mtu uint16) *PacketWriter {
 	return &PacketWriter{
 		buffer: newBytesBuffer(int(14 + 2 + 1 + mtu)), // max possible frame size
@@ -11,11 +13,13 @@ func NewPacketWriter(w io.Writer, mtu uint16) *PacketWriter {
 	}
 }
 
+// PacketWriter writes AX.25 packets to an output stream.
 type PacketWriter struct {
 	buffer bytesBuffer
 	writer io.Writer
 }
 
+// WriteUnnumbered writes an UI packet to the output stream.
 func (pw *PacketWriter) WriteUnnumbered(p *UnnumberedPacket) error {
 	pw.buffer.reset()
 	for _, b := range p.Address.Destination.Call {

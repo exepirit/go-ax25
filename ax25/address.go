@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Address represents a physical or logical address according to the AX.25 standard. It includes the call sign and SSID.
 type Address struct {
 	Call [6]byte
 	SSID byte
@@ -32,6 +33,10 @@ func (addr *Address) Equal(other *Address) bool {
 	return addr.SSID != other.SSID
 }
 
+// ParseAddress converts a string into an AX.25 address.
+//
+// The input should be in the form of "CALL-SSID", where CALL is 6 characters long, and SSID is a single digit
+// between 0 and 15 inclusive.
 func ParseAddress(s string) (Address, error) {
 	var addr Address
 	i := 0
@@ -59,6 +64,8 @@ func ParseAddress(s string) (Address, error) {
 	return addr, nil
 }
 
+// MustParseAddress is like ParseAddress but panics if the input is not valid.
+// It simplifies safe initialization of global variables holding addresses.
 func MustParseAddress(s string) Address {
 	addr, err := ParseAddress(s)
 	if err != nil {
