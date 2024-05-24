@@ -38,15 +38,19 @@ var sendCmd = &cli.Command{
 		kissWriter := kiss.NewEncoder(port, 0)
 		ax25Writer := ax25.NewPacketWriter(kissWriter, 256)
 
-		packet := ax25.UnnumberedPacket{
+		packet := ax25.Packet{
 			Address: ax25.PacketAddress{
 				Destination: ax25.MustParseAddress("NOCALL-1"),
 				Source:      ax25.MustParseAddress("NOCALL-2"),
 			},
+			Control: ax25.ControlData{
+				Type:    ax25.PacketTypeUnnumbered,
+				IsFinal: false,
+			},
 			PID:  ax25.ProtocolNoLayer3,
 			Info: []byte("test"),
 		}
-		err = ax25Writer.WriteUnnumbered(&packet)
+		err = ax25Writer.Write(&packet)
 		return err
 	},
 }
