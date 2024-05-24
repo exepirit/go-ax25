@@ -5,18 +5,26 @@ import (
 	"io"
 )
 
-// NewFrameWriter wraps io.Writer to FrameWriter.
+// NewFrameWriter creates a new writer that will write KISS frames to the provided io.Writer.
 func NewFrameWriter(w io.Writer) *FrameWriter {
 	return &FrameWriter{
 		buf: bufio.NewWriterSize(w, MaxPDUSize),
 	}
 }
 
+const (
+	fend  = 0xc0
+	fesc  = 0xdb
+	tfend = 0xdc
+	tfesc = 0xdd
+)
+
 // FrameWriter writes frames to io.Writer.
 type FrameWriter struct {
 	buf *bufio.Writer
 }
 
+// Write encodes frame into KISS protocol format and writes to underlying io.Writer through buffer.
 func (writer *FrameWriter) Write(frame *Frame) error {
 	err := writer.buf.WriteByte(fend)
 	if err != nil {
@@ -51,7 +59,7 @@ func (writer *FrameWriter) Write(frame *Frame) error {
 	return writer.buf.Flush()
 }
 
-// NewFrameReader wraps io.Reader to FrameReader.
+// NewFrameReader creates a new FrameReader that will use the provided io.Reader as its source of data.
 func NewFrameReader(r io.Reader) *FrameReader {
 	return &FrameReader{
 		scanner: bufio.NewReaderSize(r, MaxPDUSize),
@@ -68,13 +76,14 @@ const (
 	readerEscapeSeqRead
 )
 
-// FrameReader reads frames from io.Reader.
+// FrameReader provides an interface for reading KISS frames.
 type FrameReader struct {
 	scanner *bufio.Reader
 	state   frameReaderState
 	frame   Frame
 }
 
+// Read decodes next frame from I/O into Frame format.
 func (reader *FrameReader) Read() (*Frame, error) {
 	for {
 		b, err := reader.scanner.ReadByte()
