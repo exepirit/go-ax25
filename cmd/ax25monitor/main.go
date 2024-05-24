@@ -10,7 +10,6 @@ var app = &cli.App{
 	Name: "ax25monitor",
 	Commands: []*cli.Command{
 		sendCmd,
-		linuxCmd,
 	},
 }
 

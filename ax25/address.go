@@ -2,20 +2,13 @@ package ax25
 
 import (
 	"errors"
-	"net"
 	"strconv"
 	"strings"
 )
 
-var _ net.Addr = &Address{}
-
 type Address struct {
 	Call [6]byte
 	SSID byte
-}
-
-func (addr *Address) Network() string {
-	return "ax25"
 }
 
 func (addr *Address) String() string {
