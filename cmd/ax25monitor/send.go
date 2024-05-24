@@ -10,7 +10,7 @@ import (
 
 var sendCmd = &cli.Command{
 	Name:  "send",
-	Usage: "Send data in UI packet",
+	Usage: "send data in UI frame",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:     "device",
@@ -57,21 +57,21 @@ var sendCmd = &cli.Command{
 		defer port.Close()
 
 		kissWriter := kiss.NewEncoder(port, 0)
-		ax25Writer := ax25.NewPacketWriter(kissWriter, 256)
+		ax25Writer := ax25.NewFrameEncoder(kissWriter, 256)
 
-		packet := ax25.Packet{
-			Address: ax25.PacketAddress{
+		frame := ax25.Frame{
+			Address: ax25.FrameAddress{
 				Destination: dstAddress,
 				Source:      srcAddress,
 			},
 			Control: ax25.ControlData{
-				Type:    ax25.PacketTypeUnnumbered,
+				Type:    ax25.FrameTypeUnnumbered,
 				IsFinal: false,
 			},
 			PID:  ax25.ProtocolNoLayer3,
 			Info: []byte("test"),
 		}
-		err = ax25Writer.Write(&packet)
+		err = ax25Writer.Write(&frame)
 		return err
 	},
 }

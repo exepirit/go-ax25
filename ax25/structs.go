@@ -1,15 +1,15 @@
 package ax25
 
-// Packet represents an AX.25 packet.
-type Packet struct {
-	Address PacketAddress
+// Frame represents an AX.25 frame.
+type Frame struct {
+	Address FrameAddress
 	Control ControlData
 	PID     ProtocolID
 	Info    []byte
 }
 
-// PacketAddress represents the packet two-way address.
-type PacketAddress struct {
+// FrameAddress represents the frame two-way address.
+type FrameAddress struct {
 	Destination Address
 	Source      Address
 }
@@ -24,13 +24,13 @@ const (
 
 // ControlData represents flow control data.
 type ControlData struct {
-	Type    PacketType
+	Type    FrameType
 	IsFinal bool
 }
 
-// PacketType represents a type of AX.25 packet.
-type PacketType int
+// FrameType represents a type of AX.25 frame.
+type FrameType int
 
 const (
-	PacketTypeUnnumbered PacketType = iota
+	FrameTypeUnnumbered FrameType = iota
 )
