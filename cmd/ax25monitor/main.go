@@ -10,13 +10,7 @@ var app = &cli.App{
 	Name: "ax25monitor",
 	Commands: []*cli.Command{
 		sendCmd,
-	},
-	Flags: []cli.Flag{
-		&cli.StringFlag{
-			Name:     "callsign",
-			Required: true,
-			Aliases:  []string{"c"},
-		},
+		linuxCmd,
 	},
 }
 

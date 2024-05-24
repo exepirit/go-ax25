@@ -1,40 +1,52 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"github.com/exepirit/go-ax25/ax25"
+	"github.com/exepirit/go-ax25/kiss"
 	"github.com/urfave/cli/v2"
+	"go.bug.st/serial"
 )
 
 var sendCmd = &cli.Command{
-	Name:      "send",
-	Args:      true,
-	ArgsUsage: "data",
+	Name:  "send",
+	Usage: "",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:     "remote",
-			Aliases:  []string{"r"},
+			Name:     "device",
+			Usage:    "",
 			Required: true,
+			Aliases:  []string{"d"},
+		},
+		&cli.IntFlag{
+			Name:    "baudrate",
+			Usage:   "",
+			Value:   115200,
+			Aliases: []string{"b"},
 		},
 	},
 	Action: func(ctx *cli.Context) error {
-		localAddr, err := ax25.ParseAddress(ctx.String("callsign"))
-		if err != nil {
-			return errors.New("invalid callsign value")
+		mode := &serial.Mode{
+			BaudRate: ctx.Int("baudrate"),
 		}
-		remoteAddr, err := ax25.ParseAddress(ctx.String("remote"))
+		port, err := serial.Open(ctx.String("device"), mode)
 		if err != nil {
-			return errors.New("invalid remote callsign value")
+			return fmt.Errorf("failed to open serial port: %w", err)
 		}
+		defer port.Close()
 
-		conn, err := ax25.DialUnnumbered(&localAddr, &remoteAddr)
-		if err != nil {
-			return err
-		}
-		defer conn.Close()
+		kissWriter := kiss.NewEncoder(port, 0)
+		ax25Writer := ax25.NewPacketWriter(kissWriter, 256)
 
-		data := []byte(ctx.Args().First())
-		_, err = conn.Write(data)
+		packet := ax25.UnnumberedPacket{
+			Address: ax25.PacketAddress{
+				Destination: ax25.MustParseAddress("NOCALL-1"),
+				Source:      ax25.MustParseAddress("NOCALL-2"),
+			},
+			PID:  ax25.ProtocolNoLayer3,
+			Info: []byte("test"),
+		}
+		err = ax25Writer.WriteUnnumbered(&packet)
 		return err
 	},
 }
