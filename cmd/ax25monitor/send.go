@@ -10,22 +10,43 @@ import (
 
 var sendCmd = &cli.Command{
 	Name:  "send",
-	Usage: "",
+	Usage: "Send data in UI packet",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:     "device",
-			Usage:    "",
+			Usage:    "serial device name or path",
 			Required: true,
 			Aliases:  []string{"d"},
 		},
 		&cli.IntFlag{
 			Name:    "baudrate",
-			Usage:   "",
+			Usage:   "serial device baudrate",
 			Value:   115200,
 			Aliases: []string{"b"},
 		},
+		&cli.StringFlag{
+			Name:     "source",
+			Usage:    "source callsign in CALLSIGN-SSID format",
+			Aliases:  []string{"src"},
+			Required: true,
+		},
+		&cli.StringFlag{
+			Name:     "destination",
+			Usage:    "destination callsign in CALLSIGN-SSID format",
+			Aliases:  []string{"dst", "dest"},
+			Required: true,
+		},
 	},
 	Action: func(ctx *cli.Context) error {
+		srcAddress, err := ax25.ParseAddress(ctx.String("source"))
+		if err != nil {
+			return fmt.Errorf("invalid source callsign: %w", err)
+		}
+		dstAddress, err := ax25.ParseAddress(ctx.String("destination"))
+		if err != nil {
+			return fmt.Errorf("invalid destination callsign: %w", err)
+		}
+
 		mode := &serial.Mode{
 			BaudRate: ctx.Int("baudrate"),
 		}
@@ -40,8 +61,8 @@ var sendCmd = &cli.Command{
 
 		packet := ax25.Packet{
 			Address: ax25.PacketAddress{
-				Destination: ax25.MustParseAddress("NOCALL-1"),
-				Source:      ax25.MustParseAddress("NOCALL-2"),
+				Destination: dstAddress,
+				Source:      srcAddress,
 			},
 			Control: ax25.ControlData{
 				Type:    ax25.PacketTypeUnnumbered,

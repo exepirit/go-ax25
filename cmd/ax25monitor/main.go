@@ -7,7 +7,8 @@ import (
 )
 
 var app = &cli.App{
-	Name: "ax25monitor",
+	Name:  "ax25monitor",
+	Usage: "AX.25 monitor at low-level",
 	Commands: []*cli.Command{
 		sendCmd,
 	},
